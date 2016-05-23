@@ -656,5 +656,9 @@ def Test_method(input):
     print print_node(result)
 
 def Test_All():
-    Test_method("( + 3 2 )")
+    print("Running Interperter!  ")
+    while True:
+        input = raw_input('> ')
+        if(input =="esc"): break
+        Test_method(input)
 Test_All()
