@@ -317,6 +317,7 @@ class CuteInterpreter(object):
 
     TRUE_NODE = Node(TokenType.TRUE)
     FALSE_NODE = Node(TokenType.FALSE)
+    Symbol_Table = {}
 
     def run_arith(self, arith_node):
 
@@ -500,9 +501,12 @@ class CuteInterpreter(object):
             return self.FALSE_NODE
 
         elif func_node.type is TokenType.EQ_Q:
-            if not (rhs1.type is TokenType.INT and rhs2.type is TokenType.INT):
+            temp1 = self.run_expr(rhs1)
+            temp2 = self.run_expr(rhs2)
+
+            if not (temp1.type is TokenType.INT and temp2.type is TokenType.INT):
                 return self.FALSE_NODE
-            if (rhs1.value == rhs2.value):
+            if (temp1.value == temp2.value):
                 return self.TRUE_NODE
             else:
                 return self.FALSE_NODE
@@ -533,6 +537,24 @@ class CuteInterpreter(object):
             return None
 
 
+    def run_define(self, root_node):
+        rhs1 = root_node.next
+        rhs2 = rhs1.next
+
+        rhs2 = self.run_expr(rhs2)
+        self.insertTable(rhs1,rhs2)
+        return None
+
+    def insertTable(self,id,value):
+        self.Symbol_Table[id.value]=value
+        return None
+
+
+    def lookupTable(self,id):
+        if id in self.Symbol_Table:
+            return self.Symbol_Table[id]
+        else :
+            return None
     def run_expr(self, root_node):
         """
         :type root_node: Node
@@ -541,6 +563,9 @@ class CuteInterpreter(object):
             return None
 
         if root_node.type is TokenType.ID:
+            temp = self.lookupTable(root_node.value)
+            if temp is not None:
+                return temp
             return root_node
         elif root_node.type is TokenType.INT:
             return root_node
@@ -656,9 +681,11 @@ def Test_method(input):
     print print_node(result)
 
 def Test_All():
-    print("Running Interperter!  ")
-    while True:
-        input = raw_input('> ')
-        if(input =="esc"): break
-        Test_method(input)
+        print("Running Interperter!  ")
+        while True:
+            input = raw_input('> ')
+            if (input == "esc"): break
+            Test_method(input)
+
+
 Test_All()
