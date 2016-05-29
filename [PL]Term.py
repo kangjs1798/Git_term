@@ -549,12 +549,12 @@ class CuteInterpreter(object):
         self.Symbol_Table[id.value]=value
         return None
 
-
     def lookupTable(self,id):
         if id in self.Symbol_Table:
             return self.Symbol_Table[id]
         else :
             return None
+
     def run_expr(self, root_node):
         """
         :type root_node: Node
@@ -622,6 +622,8 @@ def print_node(node):
             return print_node(node)
 
         if node.type is TokenType.LIST:
+            if node.value is None:
+                return "(" + print_node(None) + ")"
             if node.value.type is TokenType.QUOTE:
                 return print_node(node.value)
             return "("+print_list_val(node.value)+")"
@@ -681,11 +683,15 @@ def Test_method(input):
     print print_node(result)
 
 def Test_All():
-        print("Running Interperter!  ")
+        print("Hello CuteInterpreter!  ")
         while True:
-            input = raw_input('> ')
-            if (input == "esc"): break
-            Test_method(input)
-
-
+            try:
+                input = raw_input('> ')
+                if (input == "esc"):
+                    print("Goodbye Cuteinterpreter!!")
+                    break
+                Test_method(input)
+            except:
+                print("Please Retry!")
+                continue
 Test_All()
